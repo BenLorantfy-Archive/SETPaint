@@ -1,0 +1,9 @@
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\bin\Debug\SETPaint.exe.config
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\bin\Debug\SETPaint.exe
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\bin\Debug\SETPaint.pdb
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\obj\Debug\SETPaint.csprojResolveAssemblyReference.cache
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\obj\Debug\SETPaint.frmPaint.resources
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\obj\Debug\SETPaint.Properties.Resources.resources
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\obj\Debug\SETPaint.csproj.GenerateResource.Cache
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\obj\Debug\SETPaint.exe
+C:\Users\Ben\Documents\WMP\SETPaint\SETPaint\obj\Debug\SETPaint.pdb
