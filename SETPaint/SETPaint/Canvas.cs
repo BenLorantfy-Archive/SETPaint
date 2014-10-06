@@ -13,67 +13,123 @@ namespace SETPaint
     {
         private Graphics canvas;
         private Panel canvasControl;
-        private Pen pen;
+        private SolidBrush fill;
+        private Pen stroke;
         private Pen dottedLine;
-        private Pen eraser;
+        private Pen strokeEraser;
+        private SolidBrush fillEraser;
 
-        Point point1;
-        Point point2;
+        Point startPoint;
+        Point endPoint;
+        Point topLeft;
+        Size dimensions;
 
         List<Shape> shapes;
         string shapeType;
 
         public Canvas(Panel canvasControl)
         {       
+            //
+            // Set default drawing properties
+            //
             this.canvasControl = canvasControl;
             this.canvas = this.canvasControl.CreateGraphics();
-            this.point1 = new Point(0, 0);
-            this.point2 = new Point(0, 0);
-            this.pen = new Pen(Color.Black, 4);
-            this.eraser = new Pen(Color.White, 8);
+            
+            this.startPoint = new Point(0, 0);
+            this.endPoint = new Point(0, 0);
+            
+            this.stroke = new Pen(Color.Black, 4);
+            this.fill = new SolidBrush(Color.Gray);
+            
+            this.strokeEraser = new Pen(Color.White, 16);
+            this.fillEraser = new SolidBrush(Color.White);
+
             this.dottedLine = new Pen(Color.Gray,4);
             this.dottedLine.DashPattern = new float[]{ 3, 3 };
+            
             this.shapes = new List<Shape>();
             this.shapeType = "none";
         }
 
         public void StartDraw(int x, int y)
         {
-            point1.X = x;
-            point1.Y = y;
-            point2.X = x;
-            point2.Y = y;
+            //
+            // Set start point and end point to (x,y)
+            //
+            startPoint.X = x;
+            startPoint.Y = y;
+            endPoint.X = x;
+            endPoint.Y = y;
         }
 
         public void DrawLine(int x, int y)
         {
-            canvas.DrawLine(eraser, point1, point2);
+            //
+            // Erase last line drawn and redraw what was underneath
+            // Erases circles at start and end points
+            // Otherwise there is a little spec of line left after erasing line
+            //
+            int diameter = Convert.ToInt32(stroke.Width) * 10;
+            canvas.DrawLine(strokeEraser, startPoint, endPoint);
+            canvas.FillEllipse(fillEraser, startPoint.X, startPoint.Y, diameter, diameter);
+            canvas.FillEllipse(fillEraser, endPoint.X, endPoint.Y, diameter, diameter);
+
             Redraw();
-            point2.X = x;
-            point2.Y = y;
-            canvas.DrawLine(dottedLine, point1, point2);
+            
+            //
+            // Update end point to (x,y)
+            //
+            endPoint.X = x;
+            endPoint.Y = y;
+            
+            //
+            // Draw new line
+            //
+            canvas.DrawLine(dottedLine, startPoint, endPoint);
             shapeType = "line";
+        }
+
+        private void UpdateEndPoint(int x, int y)
+        {
+            //
+            // Rectangle/Ellipse have to be drawn with top left and positive width and height
+            // Start and end points might not neccessarily correspond to top left and bottom right
+            // This finds the top left and bottom right point
+            // Width and height is calculated from these
+            //
+            int minX = Math.Min(startPoint.X, endPoint.X);
+            int maxX = Math.Max(startPoint.X, endPoint.X);
+            int minY = Math.Min(startPoint.Y, endPoint.Y);
+            int maxY = Math.Max(startPoint.Y, endPoint.Y);
+            topLeft.X = minX;
+            topLeft.Y = minY;
+            dimensions.Width = maxX - minX;
+            dimensions.Height = maxY - minY;
+
+            //
+            // Updates endPoint
+            //
+            endPoint.X = x;
+            endPoint.Y = y;
         }
 
         public void DrawRectangle(int x, int y)
         {
-            int minX = Math.Min(point1.X, point2.X);
-            int maxX = Math.Max(point1.X, point2.X);
-            int minY = Math.Min(point1.Y, point2.Y);
-            int maxY = Math.Max(point1.Y, point2.Y);
-
-            canvas.DrawRectangle(eraser, new Rectangle(minX, minY, maxX - minX, maxY - minY));
+            //
+            // Erases last rectangle and redraws what was underneath
+            //
+            canvas.DrawRectangle(strokeEraser, new Rectangle(topLeft, dimensions));
             Redraw();
 
-            point2.X = x;
-            point2.Y = y;
-
-            minX = Math.Min(point1.X, point2.X);
-            maxX = Math.Max(point1.X, point2.X);
-            minY = Math.Min(point1.Y, point2.Y);
-            maxY = Math.Max(point1.Y, point2.Y);
-
-            canvas.DrawRectangle(dottedLine, new Rectangle(minX, minY, maxX - minX, maxY - minY));
+            //
+            // Updates end point with (x,y)
+            //
+            UpdateEndPoint(x, y);
+            
+            //
+            // Draws new rectangle
+            //
+            canvas.DrawRectangle(dottedLine, new Rectangle(topLeft, dimensions));
             shapeType = "rectangle";
         }
 
@@ -83,11 +139,11 @@ namespace SETPaint
             {
                 if (shape.type == "line")
                 {
-                    canvas.DrawLine(shape.pen, new Point(shape.x, shape.y), new Point(shape.maxX, shape.maxY));
+                    canvas.DrawLine(shape.stroke, shape.startPoint, shape.endPoint);
                 }
                 else if(shape.type == "rectangle")
                 {
-                    canvas.DrawRectangle(shape.pen, new Rectangle(shape.x, shape.y, shape.maxX - shape.x, shape.maxY - shape.y));
+                    canvas.DrawRectangle(shape.stroke, shape.GetRectangle());
                 }
             }
         }
@@ -99,39 +155,59 @@ namespace SETPaint
 
         public void EndDraw()
         {
-            int minX = Math.Min(point1.X, point2.X);
-            int maxX = Math.Max(point1.X, point2.X);
-            int minY = Math.Min(point1.Y, point2.Y);
-            int maxY = Math.Max(point1.Y, point2.Y);
-
-            
-
             if (shapeType == "line")
             {
-                shapes.Add(new Shape(shapeType, point1.X, point1.Y, point2.X, point2.Y, pen));
-                canvas.DrawLine(eraser, point1, point2);
+                //
+                // Adds line to list of drawn shapes
+                //
+                shapes.Add(new Shape(shapeType, startPoint, endPoint, stroke, fill));
+
+                //
+                // Erases dotted line and draws what was underneath it
+                //
+                canvas.DrawLine(strokeEraser, startPoint, endPoint);
                 Redraw();
-                canvas.DrawLine(pen, point1, point2);
+
+                //
+                // Draws new permanent line with correct stroke width and color
+                //
+                canvas.DrawLine(stroke, startPoint, endPoint);
             }
             else if (shapeType == "rectangle")
             {
-                shapes.Add(new Shape(shapeType, minX, minY, maxX, maxY, pen));
-                canvas.DrawRectangle(eraser, new Rectangle(minX, minY, maxX - minX, maxY - minY));
-                Redraw();
-                canvas.DrawRectangle(pen, new Rectangle(minX, minY, maxX - minX, maxY - minY));
-            }
+                //
+                // Adds rectangle to list of shape
+                //
+                shapes.Add(new Shape(shapeType, startPoint, endPoint, stroke, fill));
 
+                //
+                // Erases dotted rectangle and redraws what was underneath it
+                //
+                canvas.DrawRectangle(strokeEraser, new Rectangle(topLeft, dimensions));
+                Redraw();
+
+                //
+                // Draws new permanent line with correct stroke width and color
+                //
+                canvas.DrawRectangle(stroke, new Rectangle(topLeft, dimensions));
+            }
+            
+            //
+            // Sets shape type to none
+            //
             shapeType = "none";
         }
 
         public void CancelDraw()
         {
-            canvas.DrawLine(eraser, point1, point2);
-            Redraw();
+            
         }
 
         public void Undo()
         {
+            //
+            // Removes last shape and redraws
+            //
             if (shapes.Count > 0)
             {
                 shapes.RemoveAt(shapes.Count - 1);

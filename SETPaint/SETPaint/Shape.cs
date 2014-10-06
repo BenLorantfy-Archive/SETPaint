@@ -9,21 +9,31 @@ namespace SETPaint
 {
     class Shape
     {
-        public Pen pen;
-        public int x;
-        public int y;
-        public int maxX;
-        public int maxY;
+        public Point startPoint;
+        public Point endPoint;
+        public Pen stroke;
+        public SolidBrush fill;
         public string type;
 
-        public Shape(string type, int x, int y, int maxX, int maxY, Pen pen)
+        public Shape(string type, Point startPoint, Point endPoint, Pen stroke, SolidBrush fill)
         {
-            this.x = x;
-            this.y = y;
-            this.maxX = maxX;
-            this.maxY = maxY;
-            this.pen = new Pen(pen.Color, pen.Width);
+            this.startPoint = new Point(startPoint.X, startPoint.Y);
+            this.endPoint = new Point(endPoint.X, endPoint.Y);
+            this.stroke = new Pen(stroke.Color, stroke.Width);
+            this.fill = new SolidBrush(fill.Color);
             this.type = type;
+            this.stroke = stroke;
+            this.fill = fill;
+        }
+
+        public Rectangle GetRectangle()
+        {
+            int minX = Math.Min(startPoint.X, endPoint.X);
+            int maxX = Math.Max(startPoint.X, endPoint.X);
+            int minY = Math.Min(startPoint.Y, endPoint.Y);
+            int maxY = Math.Max(startPoint.Y, endPoint.Y);
+
+            return new Rectangle(minX, minY, maxX - minX, maxY - minY);
         }
     }
 
