@@ -33,6 +33,20 @@ namespace SETPaint
 
             return new Rectangle(minX, minY, maxX - minX, maxY - minY);
         }
+
+        public override string ToString()
+        {
+            return
+                type + "|" +
+                startPoint.X + "|" +
+                startPoint.Y + "|" +
+                endPoint.X + "|" +
+                endPoint.Y + "|" +
+                stroke.Color.ToArgb() + "|" +
+                stroke.Width + "|" +
+                fill.Color.ToArgb();
+                
+        }
     }
 
 }

@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Draw.cs" />
+    <Compile Include="FileIO.cs" />
     <Compile Include="frmPaint.cs">
       <SubType>Form</SubType>
     </Compile>

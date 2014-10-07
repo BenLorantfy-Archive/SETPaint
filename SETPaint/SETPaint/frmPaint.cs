@@ -17,11 +17,13 @@ namespace SETPaint
         int mouseY;
         string tool;
         Draw draw;
+        FileIO fileIO;
         bool undo;
         public frmPaint()
         {           
             InitializeComponent();
             draw = new Draw();
+            fileIO = new FileIO();
             mouseX = 0;
             mouseY = 0;
             tool = "none";
@@ -121,6 +123,11 @@ namespace SETPaint
                 case "stopDrawingEllipse":
                     draw.End(e.Graphics);
                     tool = "ellipse";
+                    break;
+
+                case "clearing":
+                    draw.ClearAndReset(e.Graphics);
+                    tool = "none";
                     break;
 
                 default:
@@ -232,6 +239,50 @@ namespace SETPaint
             draw.SetStrokeWidth(width);           
         }
 
+        private void eraseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Do you want to delete entire image?", "Clear Image", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                tool = "clearing";
+                pnlCanvas.Invalidate();
+            } 
+        }
 
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = saveDialog.FileName.ToString();
+                fileIO.Save(fileName, draw.Shapes());
+            }
+            
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fileIO.Export("test", draw.Shapes()); //Delete this if its not implemented
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = openDialog.FileName.ToString();
+                fileIO.Open(fileName, draw.Shapes());
+                tool = "none";
+                pnlCanvas.Invalidate();
+            }
+            
+        }
+
+       
     }
 }
