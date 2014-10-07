@@ -30,24 +30,35 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPaint));
             this.pnlCanvas = new System.Windows.Forms.Panel();
+            this.pnlColors = new System.Windows.Forms.Panel();
+            this.pnlStrokeColor = new System.Windows.Forms.Panel();
+            this.txtStrokeWidth = new System.Windows.Forms.TextBox();
+            this.trkStrokeWidth = new System.Windows.Forms.TrackBar();
+            this.lblStrokeWidth = new System.Windows.Forms.Label();
+            this.lblFillAndStroke = new System.Windows.Forms.Label();
+            this.pnlFillColor = new System.Windows.Forms.Panel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblDebug = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnLine = new System.Windows.Forms.ToolStripButton();
+            this.btnRectangle = new System.Windows.Forms.ToolStripButton();
+            this.btnEllipse = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnRectangle = new System.Windows.Forms.ToolStripButton();
-            this.btnEllipse = new System.Windows.Forms.ToolStripButton();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.lblDebug = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnSwitch = new System.Windows.Forms.Button();
             this.pnlCanvas.SuspendLayout();
+            this.pnlColors.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkStrokeWidth)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlCanvas
             // 
             this.pnlCanvas.BackColor = System.Drawing.Color.White;
+            this.pnlCanvas.Controls.Add(this.pnlColors);
             this.pnlCanvas.Controls.Add(this.statusStrip1);
             this.pnlCanvas.Controls.Add(this.toolStrip1);
             this.pnlCanvas.Controls.Add(this.menuStrip1);
@@ -61,6 +72,96 @@
             this.pnlCanvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlCanvas_MouseDown);
             this.pnlCanvas.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlCanvas_MouseMove);
             this.pnlCanvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlCanvas_MouseUp);
+            // 
+            // pnlColors
+            // 
+            this.pnlColors.BackColor = System.Drawing.SystemColors.Control;
+            this.pnlColors.Controls.Add(this.btnSwitch);
+            this.pnlColors.Controls.Add(this.pnlStrokeColor);
+            this.pnlColors.Controls.Add(this.txtStrokeWidth);
+            this.pnlColors.Controls.Add(this.trkStrokeWidth);
+            this.pnlColors.Controls.Add(this.lblStrokeWidth);
+            this.pnlColors.Controls.Add(this.lblFillAndStroke);
+            this.pnlColors.Controls.Add(this.pnlFillColor);
+            this.pnlColors.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlColors.Location = new System.Drawing.Point(452, 24);
+            this.pnlColors.Name = "pnlColors";
+            this.pnlColors.Size = new System.Drawing.Size(113, 369);
+            this.pnlColors.TabIndex = 3;
+            // 
+            // pnlStrokeColor
+            // 
+            this.pnlStrokeColor.BackColor = System.Drawing.Color.Black;
+            this.pnlStrokeColor.Location = new System.Drawing.Point(57, 28);
+            this.pnlStrokeColor.Name = "pnlStrokeColor";
+            this.pnlStrokeColor.Size = new System.Drawing.Size(43, 43);
+            this.pnlStrokeColor.TabIndex = 9;
+            this.pnlStrokeColor.Click += new System.EventHandler(this.pnlStrokeColor_Click);
+            // 
+            // txtStrokeWidth
+            // 
+            this.txtStrokeWidth.Location = new System.Drawing.Point(14, 133);
+            this.txtStrokeWidth.Name = "txtStrokeWidth";
+            this.txtStrokeWidth.Size = new System.Drawing.Size(40, 20);
+            this.txtStrokeWidth.TabIndex = 5;
+            this.txtStrokeWidth.Text = "4";
+            this.txtStrokeWidth.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStrokeWidth_KeyDown);
+            this.txtStrokeWidth.Leave += new System.EventHandler(this.txtStrokeWidth_Leave);
+            // 
+            // trkStrokeWidth
+            // 
+            this.trkStrokeWidth.Location = new System.Drawing.Point(4, 159);
+            this.trkStrokeWidth.Maximum = 20;
+            this.trkStrokeWidth.Minimum = 1;
+            this.trkStrokeWidth.Name = "trkStrokeWidth";
+            this.trkStrokeWidth.Size = new System.Drawing.Size(107, 45);
+            this.trkStrokeWidth.TabIndex = 4;
+            this.trkStrokeWidth.TickFrequency = 2;
+            this.trkStrokeWidth.Value = 4;
+            this.trkStrokeWidth.Scroll += new System.EventHandler(this.trkStrokeWidth_Scroll);
+            // 
+            // lblStrokeWidth
+            // 
+            this.lblStrokeWidth.AutoSize = true;
+            this.lblStrokeWidth.Location = new System.Drawing.Point(10, 114);
+            this.lblStrokeWidth.Name = "lblStrokeWidth";
+            this.lblStrokeWidth.Size = new System.Drawing.Size(69, 13);
+            this.lblStrokeWidth.TabIndex = 8;
+            this.lblStrokeWidth.Text = "Stroke Width";
+            // 
+            // lblFillAndStroke
+            // 
+            this.lblFillAndStroke.AutoSize = true;
+            this.lblFillAndStroke.Location = new System.Drawing.Point(10, 12);
+            this.lblFillAndStroke.Name = "lblFillAndStroke";
+            this.lblFillAndStroke.Size = new System.Drawing.Size(74, 13);
+            this.lblFillAndStroke.TabIndex = 7;
+            this.lblFillAndStroke.Text = "Fill and Stroke";
+            // 
+            // pnlFillColor
+            // 
+            this.pnlFillColor.BackColor = System.Drawing.Color.DodgerBlue;
+            this.pnlFillColor.Location = new System.Drawing.Point(14, 28);
+            this.pnlFillColor.Name = "pnlFillColor";
+            this.pnlFillColor.Size = new System.Drawing.Size(43, 43);
+            this.pnlFillColor.TabIndex = 6;
+            this.pnlFillColor.Click += new System.EventHandler(this.pnlFillColor_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblDebug});
+            this.statusStrip1.Location = new System.Drawing.Point(24, 393);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(541, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblDebug
+            // 
+            this.lblDebug.Name = "lblDebug";
+            this.lblDebug.Size = new System.Drawing.Size(118, 17);
+            this.lblDebug.Text = "toolStripStatusLabel1";
             // 
             // toolStrip1
             // 
@@ -85,6 +186,26 @@
             this.btnLine.Size = new System.Drawing.Size(21, 20);
             this.btnLine.Text = "toolStripButton1";
             this.btnLine.Click += new System.EventHandler(this.btnLine_Click);
+            // 
+            // btnRectangle
+            // 
+            this.btnRectangle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnRectangle.Image = ((System.Drawing.Image)(resources.GetObject("btnRectangle.Image")));
+            this.btnRectangle.ImageTransparentColor = System.Drawing.Color.White;
+            this.btnRectangle.Name = "btnRectangle";
+            this.btnRectangle.Size = new System.Drawing.Size(21, 20);
+            this.btnRectangle.Text = "toolStripButton1";
+            this.btnRectangle.Click += new System.EventHandler(this.btnRectangle_Click);
+            // 
+            // btnEllipse
+            // 
+            this.btnEllipse.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnEllipse.Image = ((System.Drawing.Image)(resources.GetObject("btnEllipse.Image")));
+            this.btnEllipse.ImageTransparentColor = System.Drawing.Color.White;
+            this.btnEllipse.Name = "btnEllipse";
+            this.btnEllipse.Size = new System.Drawing.Size(21, 20);
+            this.btnEllipse.Text = "toolStripButton2";
+            this.btnEllipse.Click += new System.EventHandler(this.btnEllipse_Click);
             // 
             // menuStrip1
             // 
@@ -111,40 +232,15 @@
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
-            // btnRectangle
+            // btnSwitch
             // 
-            this.btnRectangle.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnRectangle.Image = ((System.Drawing.Image)(resources.GetObject("btnRectangle.Image")));
-            this.btnRectangle.ImageTransparentColor = System.Drawing.Color.White;
-            this.btnRectangle.Name = "btnRectangle";
-            this.btnRectangle.Size = new System.Drawing.Size(21, 20);
-            this.btnRectangle.Text = "toolStripButton1";
-            this.btnRectangle.Click += new System.EventHandler(this.btnRectangle_Click);
-            // 
-            // btnEllipse
-            // 
-            this.btnEllipse.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnEllipse.Image = ((System.Drawing.Image)(resources.GetObject("btnEllipse.Image")));
-            this.btnEllipse.ImageTransparentColor = System.Drawing.Color.White;
-            this.btnEllipse.Name = "btnEllipse";
-            this.btnEllipse.Size = new System.Drawing.Size(21, 20);
-            this.btnEllipse.Text = "toolStripButton2";
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblDebug});
-            this.statusStrip1.Location = new System.Drawing.Point(24, 393);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(541, 22);
-            this.statusStrip1.TabIndex = 2;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // lblDebug
-            // 
-            this.lblDebug.Name = "lblDebug";
-            this.lblDebug.Size = new System.Drawing.Size(118, 17);
-            this.lblDebug.Text = "toolStripStatusLabel1";
+            this.btnSwitch.Location = new System.Drawing.Point(13, 77);
+            this.btnSwitch.Name = "btnSwitch";
+            this.btnSwitch.Size = new System.Drawing.Size(87, 23);
+            this.btnSwitch.TabIndex = 10;
+            this.btnSwitch.Text = "Switch";
+            this.btnSwitch.UseVisualStyleBackColor = true;
+            this.btnSwitch.Click += new System.EventHandler(this.btnSwitch_Click);
             // 
             // frmPaint
             // 
@@ -155,15 +251,17 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmPaint";
             this.Text = "Form1";
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmPaint_KeyPress);
             this.pnlCanvas.ResumeLayout(false);
             this.pnlCanvas.PerformLayout();
+            this.pnlColors.ResumeLayout(false);
+            this.pnlColors.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkStrokeWidth)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -180,6 +278,14 @@
         private System.Windows.Forms.ToolStripButton btnEllipse;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblDebug;
+        private System.Windows.Forms.Panel pnlColors;
+        private System.Windows.Forms.TextBox txtStrokeWidth;
+        private System.Windows.Forms.Panel pnlFillColor;
+        private System.Windows.Forms.Label lblStrokeWidth;
+        private System.Windows.Forms.Label lblFillAndStroke;
+        private System.Windows.Forms.TrackBar trkStrokeWidth;
+        private System.Windows.Forms.Panel pnlStrokeColor;
+        private System.Windows.Forms.Button btnSwitch;
     }
 }
 
