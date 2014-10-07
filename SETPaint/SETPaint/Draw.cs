@@ -117,7 +117,23 @@ namespace SETPaint
 
         public void Ellipse(Graphics canvas, int x, int y)
         {
-            //todo
+            //
+            // Erases last rectangle and redraws what was underneath
+            //
+            canvas.DrawEllipse(strokeEraser, new Rectangle(topLeft, dimensions));
+            Redraw(canvas);
+
+            //
+            // Updates end point with (x,y)
+            //
+            UpdateEndPoint(x, y);
+
+            //
+            // Draws new rectangle
+            //
+            canvas.DrawEllipse(dottedLine, new Rectangle(topLeft, dimensions));
+
+            shapeType = "ellipse";
         }
 
         public void End(Graphics canvas)
@@ -144,7 +160,6 @@ namespace SETPaint
                 }
                 else if (shapeType == "rectangle")
                 {
-
                     //
                     // Erases dotted rectangle and redraws what was underneath it
                     //
@@ -161,6 +176,25 @@ namespace SETPaint
                     //
                     canvas.FillRectangle(fill, new Rectangle(topLeft, dimensions));
                     canvas.DrawRectangle(stroke, new Rectangle(topLeft, dimensions));
+                }
+                else if (shapeType == "ellipse")
+                {
+                    //
+                    // Erases dotted rectangle and redraws what was underneath it
+                    //
+                    canvas.DrawEllipse(strokeEraser, new Rectangle(topLeft, dimensions));
+                    Redraw(canvas);
+
+                    //
+                    // Adds rectangle to list of shape
+                    //
+                    shapes.Add(new Shape(shapeType, startPoint, endPoint, stroke, fill));
+
+                    //
+                    // Draws new permanent line with correct stroke width and color
+                    //
+                    canvas.FillEllipse(fill, new Rectangle(topLeft, dimensions));
+                    canvas.DrawEllipse(stroke, new Rectangle(topLeft, dimensions));
                 }
 
                 //
@@ -214,10 +248,21 @@ namespace SETPaint
                     canvas.FillRectangle(shape.fill, shape.GetRectangle());
                     canvas.DrawRectangle(shape.stroke, shape.GetRectangle());
                 }
+                else if (shape.type == "ellipse")
+                {
+                    canvas.FillEllipse(shape.fill, shape.GetRectangle());
+                    canvas.DrawEllipse(shape.stroke, shape.GetRectangle());
+                }
             }
         }
 
-        public void Clear(Graphics canvas)
+        public void ClearAndReset(Graphics canvas)
+        {
+            shapes.Clear();
+            Clear(canvas);
+        }
+
+        private void Clear(Graphics canvas)
         {
             canvas.Clear(Color.White);
         }
@@ -233,6 +278,11 @@ namespace SETPaint
                 Clear(canvas);
                 Redraw(canvas);
             }
+        }
+
+        public List<Shape> Shapes()
+        {
+            return shapes;
         }
     }
 }
