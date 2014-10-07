@@ -7,90 +7,163 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace SETPaint
 {
     public partial class frmPaint : Form
     {
-        Canvas canvas;
+        int mouseX;
+        int mouseY;
         string tool;
+        Draw draw;
+        bool undo;
         public frmPaint()
         {           
             InitializeComponent();
+            draw = new Draw();
+            mouseX = 0;
+            mouseY = 0;
             tool = "none";
-            canvas = new Canvas(pnlCanvas);
+            undo = false;
         }
 
         private void pnlCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (tool == "drawingLine")
+            mouseX = e.X;
+            mouseY = e.Y;
+
+            if (tool == "drawingLine" || tool == "drawingRectangle" || tool == "drawingEllipse")
             {
-                canvas.DrawLine(e.X, e.Y);
+                pnlCanvas.Invalidate();
             }
-            else if (tool == "drawingRectangle")
-            {
-                canvas.DrawRectangle(e.X, e.Y);
-            }
-           
         }
 
         private void pnlCanvas_MouseDown(object sender, MouseEventArgs e)
         {
-            if (tool == "line")
+            txtStrokeWidth_Leave(sender, e);
+            draw.Start(mouseX, mouseY);
+
+            switch (tool)
             {
-                tool = "drawingLine";
-                
+                case "line":
+                    tool = "drawingLine";
+                    break;
+
+                case "rectangle":
+                    tool = "drawingRectangle";
+                    break;
+
+                case "ellipse":
+                    tool = "drawingEllipse";
+                    break;
             }
-            else if (tool == "rectangle")
-            {
-                tool = "drawingRectangle";
-            }
-            canvas.StartDraw(e.X, e.Y);
+            
         }
 
         private void pnlCanvas_MouseUp(object sender, MouseEventArgs e)
         {
-            if (tool == "drawingLine")
+            switch (tool)
             {
-                tool = "line";
+                case "drawingLine":
+                    tool = "stopDrawingLine";
+                    pnlCanvas.Invalidate();
+                    break;
+
+                case "drawingRectangle":
+                    tool = "stopDrawingRectangle";
+                    pnlCanvas.Invalidate();
+                    break;
+
+                case "drawingEllipse":
+                    tool = "stopDrawingEllipse";
+                    pnlCanvas.Invalidate();
+                    break;
             }
-            else if (tool == "drawingRectangle")
-            {
-                tool = "rectangle";  
-            }
-            canvas.EndDraw();
+
+            
         }
 
         private void pnlCanvas_Paint(object sender, PaintEventArgs e)
         {
-            canvas.Redraw();
-        }
+            if (undo)
+            {
+                draw.Undo(e.Graphics);
+                undo = false;
+            }
 
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            canvas.Undo();
+            //
+            // Do all drawing here
+            //     
+            switch (tool){
+                case "drawingLine":
+                    draw.Line(e.Graphics, mouseX, mouseY);
+                    break;
+                
+                case "drawingRectangle":
+                    draw.Rectangle(e.Graphics, mouseX, mouseY);
+                    break;
+
+                case "drawingEllipse":
+                    draw.Ellipse(e.Graphics, mouseX, mouseY);
+                    break;
+
+                case "stopDrawingLine":
+                    draw.End(e.Graphics);
+                    tool = "line";
+                    break;
+                
+                case "stopDrawingRectangle":
+                    draw.End(e.Graphics);
+                    tool = "rectangle";
+                    break;
+                
+                case "stopDrawingEllipse":
+                    draw.End(e.Graphics);
+                    tool = "ellipse";
+                    break;
+
+                default:
+                    draw.Redraw(e.Graphics);
+                    break;
+
+            }
         }
 
         private void btnLine_Click(object sender, EventArgs e)
         {
             tool = "line";
-        }
-
-        private void frmPaint_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == 27)
-            {
-                if (tool == "drawingLine")
-                {
-                    tool = "line";
-                }
-                canvas.CancelDraw();
-            }
+            txtStrokeWidth_Leave(sender, e);
         }
 
         private void btnRectangle_Click(object sender, EventArgs e)
         {
             tool = "rectangle";
+            txtStrokeWidth_Leave(sender, e);
+        }
+
+        private void btnEllipse_Click(object sender, EventArgs e)
+        {
+            tool = "ellipse";
+            txtStrokeWidth_Leave(sender, e);
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            undo = true;
+            pnlCanvas.Invalidate();
+        }
+        
+        private void btnSwitch_Click(object sender, EventArgs e)
+        {
+            Color fill = pnlFillColor.BackColor;
+            Color stroke = pnlStrokeColor.BackColor;
+
+            pnlFillColor.BackColor = stroke;
+            pnlStrokeColor.BackColor = fill;
+
+            draw.SetStrokeColor(fill);
+            draw.SetFillColor(stroke);
         }
 
         private void pnlFillColor_Click(object sender, EventArgs e)
@@ -99,7 +172,7 @@ namespace SETPaint
             colorPicker.ShowDialog();
             Color color = colorPicker.Color;
             pnlFillColor.BackColor = color;
-            canvas.SetFill(color);
+            draw.SetFillColor(color);
         }
 
         private void pnlStrokeColor_Click(object sender, EventArgs e)
@@ -108,9 +181,56 @@ namespace SETPaint
             colorPicker.ShowDialog();
             Color color = colorPicker.Color;
             pnlStrokeColor.BackColor = color;
-            canvas.SetStroke(color);
+            draw.SetStrokeColor(color);
         }
 
+        private void trkStrokeWidth_Scroll(object sender, EventArgs e)
+        {
+            int width = trkStrokeWidth.Value;
+            draw.SetStrokeWidth(width);
+            txtStrokeWidth.Text = Convert.ToString(width);
+        }
+
+        private void txtStrokeWidth_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;          //Stops ding when enter is pressed
+                txtStrokeWidth_Leave(sender, e);
+            }
+        }
+
+        private void txtStrokeWidth_Leave(object sender, EventArgs e)
+        {
+            //
+            // Tries to convert textbox value to integer
+            // If string is not a valid integer, it sets the width to 1
+            //
+            string textBoxValue = txtStrokeWidth.Text;
+            int width = 1;
+            if (!int.TryParse(textBoxValue, out width) || width < 1)
+            {
+                width = 1;
+                txtStrokeWidth.Text = "1";
+            }
+            else if (width > 100)
+            {
+                width = 100;
+                txtStrokeWidth.Text = "100";
+            }
+
+            if (width <= 20)
+            {
+                trkStrokeWidth.Value = width;
+            }
+            else
+            {
+                trkStrokeWidth.Value = 20;
+            }
+            
+            draw.SetStrokeWidth(width);           
+        }
 
 
     }
