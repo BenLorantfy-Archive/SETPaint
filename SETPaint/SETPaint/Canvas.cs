@@ -27,6 +27,16 @@ namespace SETPaint
         List<Shape> shapes;
         string shapeType;
 
+        public void SetStroke(Color color)
+        {
+            stroke.Color = color;
+        }
+
+        public void SetFill(Color color)
+        {
+            fill.Color = color;
+        }
+
         public Canvas(Panel canvasControl)
         {       
             //
@@ -39,9 +49,9 @@ namespace SETPaint
             this.endPoint = new Point(0, 0);
             
             this.stroke = new Pen(Color.Black, 4);
-            this.fill = new SolidBrush(Color.Gray);
+            this.fill = new SolidBrush(Color.LightBlue);
             
-            this.strokeEraser = new Pen(Color.White, 16);
+            this.strokeEraser = new Pen(Color.White, 20);
             this.fillEraser = new SolidBrush(Color.White);
 
             this.dottedLine = new Pen(Color.Gray,4);
@@ -49,7 +59,9 @@ namespace SETPaint
             
             this.shapes = new List<Shape>();
             this.shapeType = "none";
+
         }
+
 
         public void StartDraw(int x, int y)
         {
@@ -71,8 +83,6 @@ namespace SETPaint
             //
             int diameter = Convert.ToInt32(stroke.Width) * 10;
             canvas.DrawLine(strokeEraser, startPoint, endPoint);
-            canvas.FillEllipse(fillEraser, startPoint.X, startPoint.Y, diameter, diameter);
-            canvas.FillEllipse(fillEraser, endPoint.X, endPoint.Y, diameter, diameter);
 
             Redraw();
             
@@ -103,6 +113,7 @@ namespace SETPaint
             int maxY = Math.Max(startPoint.Y, endPoint.Y);
             topLeft.X = minX;
             topLeft.Y = minY;
+            
             dimensions.Width = maxX - minX;
             dimensions.Height = maxY - minY;
 
@@ -130,6 +141,7 @@ namespace SETPaint
             // Draws new rectangle
             //
             canvas.DrawRectangle(dottedLine, new Rectangle(topLeft, dimensions));
+        
             shapeType = "rectangle";
         }
 
@@ -143,6 +155,7 @@ namespace SETPaint
                 }
                 else if(shape.type == "rectangle")
                 {
+                    canvas.FillRectangle(shape.fill, shape.GetRectangle());
                     canvas.DrawRectangle(shape.stroke, shape.GetRectangle());
                 }
             }
@@ -189,6 +202,7 @@ namespace SETPaint
                 //
                 // Draws new permanent line with correct stroke width and color
                 //
+                canvas.FillRectangle(fill, new Rectangle(topLeft, dimensions));
                 canvas.DrawRectangle(stroke, new Rectangle(topLeft, dimensions));
             }
             

@@ -22,8 +22,6 @@ namespace SETPaint
             this.stroke = new Pen(stroke.Color, stroke.Width);
             this.fill = new SolidBrush(fill.Color);
             this.type = type;
-            this.stroke = stroke;
-            this.fill = fill;
         }
 
         public Rectangle GetRectangle()

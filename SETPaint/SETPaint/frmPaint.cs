@@ -93,6 +93,23 @@ namespace SETPaint
             tool = "rectangle";
         }
 
+        private void pnlFillColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorPicker = new ColorDialog();
+            colorPicker.ShowDialog();
+            Color color = colorPicker.Color;
+            pnlFillColor.BackColor = color;
+            canvas.SetFill(color);
+        }
+
+        private void pnlStrokeColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorPicker = new ColorDialog();
+            colorPicker.ShowDialog();
+            Color color = colorPicker.Color;
+            pnlStrokeColor.BackColor = color;
+            canvas.SetStroke(color);
+        }
 
 
 
