@@ -34,7 +34,7 @@ namespace SETPaint
         {
             if (checkPainting)
             {
-                mousePosition.Text = "X: " + this.PointToClient(Control.MousePosition).X + "    Y: " + this.PointToClient(Control.MousePosition).Y;
+                mousePosition.Text = "X: " + (this.PointToClient(Control.MousePosition).X - 24) + "    Y: " + (this.PointToClient(Control.MousePosition).Y - 24);
             }
 
             else
@@ -345,21 +345,36 @@ namespace SETPaint
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             OpenFileDialog openDialog = new OpenFileDialog();
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 string fileName = openDialog.FileName.ToString();
+               
                 fileIO.Open(fileName, draw.Shapes());
                 tool = "none";
                 pnlCanvas.Invalidate();
+
+                this.Text = this.Text + " - " + openDialog.SafeFileName;
+                
             }
+
+            else
+            {
+                this.Text = this.Text + " - " + "Untitled";
+            }
+
             
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+
+
+        private void aboutSETPaintToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("SET Paint" + "\n" + "Ben Lorantfy" + "\n" + "Chuang Liu" + "\n" + "Version 1.2" + "\n" + "Conestoga College");
         }
+
+        
 
 
         
