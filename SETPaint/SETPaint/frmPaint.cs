@@ -19,6 +19,7 @@ namespace SETPaint
         Draw draw;
         FileIO fileIO;
         bool undo;
+        bool checkPainting = false;
         public frmPaint()
         {           
             InitializeComponent();
@@ -29,9 +30,21 @@ namespace SETPaint
             tool = "none";
             undo = false;
         }
+        private void mousePosition_display()
+        {
+            if (checkPainting)
+            {
+                mousePosition.Text = "X: " + this.PointToClient(Control.MousePosition).X + "    Y: " + this.PointToClient(Control.MousePosition).Y;
+            }
 
+            else
+            {
+                mousePosition.Text = "";
+            }
+        }
         private void pnlCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            mousePosition_display();
             mouseX = e.X;
             mouseY = e.Y;
 
@@ -43,6 +56,7 @@ namespace SETPaint
 
         private void pnlCanvas_MouseDown(object sender, MouseEventArgs e)
         {
+            checkPainting = true;
             txtStrokeWidth_Leave(sender, e);
             draw.Start(mouseX, mouseY);
 
@@ -65,6 +79,8 @@ namespace SETPaint
 
         private void pnlCanvas_MouseUp(object sender, MouseEventArgs e)
         {
+            checkPainting = false;
+
             switch (tool)
             {
                 case "drawingLine":
@@ -267,7 +283,64 @@ namespace SETPaint
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            fileIO.Export("test", draw.Shapes()); //Delete this if its not implemented
+            //fileIO.Export("test", draw.Shapes()); //Delete this if its not implemented
+            Point screenLocation = PointToScreen(pnlCanvas.Location);
+            Bitmap bmp = new Bitmap(pnlCanvas.Width, pnlCanvas.Height);
+            Graphics g = Graphics.FromImage(bmp);
+            g.CopyFromScreen(new Point(screenLocation.X, screenLocation.Y), new Point(pnlCanvas.Location.X, pnlCanvas.Location.Y), new Size(pnlCanvas.Width, pnlCanvas.Height));
+
+            bool isSave = true;
+            SaveFileDialog sfdlg = new SaveFileDialog();
+            sfdlg.Title = "Save Image";
+            sfdlg.Filter = @"jpeg|*.jpg|bmp|*.bmp|gif|*.gif";
+            if (sfdlg.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = sfdlg.FileName.ToString();
+
+                if (fileName != "" && fileName != null)
+                {
+                    string fileExtName = fileName.Substring(fileName.LastIndexOf(".") + 1).ToString();
+                    System.Drawing.Imaging.ImageFormat imgformat = null;
+
+                    if (fileExtName != "")
+                    {
+                        switch (fileExtName)
+                        {
+                            case "jpg":
+                                imgformat = System.Drawing.Imaging.ImageFormat.Jpeg;
+                                break;
+                            case "bmp":
+                                imgformat = System.Drawing.Imaging.ImageFormat.Bmp;
+                                break;
+                            case "gif":
+                                imgformat = System.Drawing.Imaging.ImageFormat.Gif;
+                                break;
+                            default:
+                                MessageBox.Show("Only save as: jpg,bmp,gif");
+                                isSave = false;
+                                break;
+                        }
+
+                    }
+                    if (imgformat == null)
+                    {
+                        imgformat = System.Drawing.Imaging.ImageFormat.Jpeg;
+                    }
+
+                    if (isSave)
+                    {
+                        try
+                        {
+                            bmp.Save(fileName, imgformat);
+                            MessageBox.Show("Export Success!");
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Failed");
+                        }
+                    }
+                }
+            }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -282,6 +355,14 @@ namespace SETPaint
             }
             
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("SET Paint" + "\n" + "Ben Lorantfy" + "\n" + "Chuang Liu" + "\n" + "Version 1.2" + "\n" + "Conestoga College");
+        }
+
+
+        
 
        
     }

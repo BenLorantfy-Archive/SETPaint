@@ -16,3 +16,12 @@ C:\Users\Ben\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.cspr
 C:\Users\Ben\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.frmPaint.resources
 C:\Users\Ben\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.Properties.Resources.resources
 C:\Users\Ben\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.csproj.GenerateResource.Cache
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\bin\Debug\SETPaint.exe.config
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.exe
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.pdb
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\bin\Debug\SETPaint.exe
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\bin\Debug\SETPaint.pdb
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.csprojResolveAssemblyReference.cache
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.frmPaint.resources
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.Properties.Resources.resources
+C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.csproj.GenerateResource.Cache
