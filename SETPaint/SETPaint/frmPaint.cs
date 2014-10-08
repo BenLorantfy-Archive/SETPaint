@@ -210,19 +210,23 @@ namespace SETPaint
         private void pnlFillColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorPicker = new ColorDialog();
-            colorPicker.ShowDialog();
-            Color color = colorPicker.Color;
-            pnlFillColor.BackColor = color;
-            draw.SetFillColor(color);
+            if (colorPicker.ShowDialog() == DialogResult.OK)
+            {
+                Color color = colorPicker.Color;
+                pnlFillColor.BackColor = color;
+                draw.SetFillColor(color);
+            }
         }
 
         private void pnlStrokeColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorPicker = new ColorDialog();
-            colorPicker.ShowDialog();
-            Color color = colorPicker.Color;
-            pnlStrokeColor.BackColor = color;
-            draw.SetStrokeColor(color);
+            if (colorPicker.ShowDialog() == DialogResult.OK)
+            {
+                Color color = colorPicker.Color;
+                pnlStrokeColor.BackColor = color;
+                draw.SetStrokeColor(color);
+            }
         }
 
         private void trkStrokeWidth_Scroll(object sender, EventArgs e)
