@@ -25,3 +25,4 @@ C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.c
 C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.frmPaint.resources
 C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.Properties.Resources.resources
 C:\Users\Chuang\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.csproj.GenerateResource.Cache
+C:\Users\Ben\Documents\GitHub\SETPaint\SETPaint\SETPaint\obj\Debug\SETPaint.frmAbout.resources

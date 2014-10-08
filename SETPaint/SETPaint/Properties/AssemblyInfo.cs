@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SETPaint")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("SETPaint is a simple drawing program that allows you to draw lines, rectangles, and ellipses.  Other features include saving, opening, chaning color of the fill and stroke, and chaning the stroke width.  It was an assignment for Windows and Mobile Programming in the Software Engineering Technology program at Conestoga College and is meant as an introduction to .Net and a demonstration of GDI+.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("SET")]
 [assembly: AssemblyProduct("SETPaint")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2014")]
+[assembly: AssemblyCopyright("By Ben Lorantfy and Chaung Liu")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
