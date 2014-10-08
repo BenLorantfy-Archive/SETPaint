@@ -1,4 +1,16 @@
-﻿using System;
+﻿/* ================================================ *
+ *											 		*
+ * 		FILE 			: FileIO.cs 				*
+ * 		PROJECT 		: WMP A3					*
+ * 		PROGRAMMER 		: Ben Lorantfy              *
+ * 		                  and Chaung Liu 		    *
+ * 		FIRST VERSION 	: 2014-10-07 				*
+ * 		DESCRIPTION		: Contains methods for      *
+ * 		                  file io                   * 
+ *													*
+ * ================================================ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +20,12 @@ using System.Drawing;
 
 namespace SETPaint
 {
+    /* =========================================================================================================== *
+    *											 																   *
+    * 		NAME 			: FileIO																			   *
+    * 		PURPOSE 		: The fileIO class encapsultes methods used for interacting with files                 * 
+    *																											   *
+    * ============================================================================================================ */
     class FileIO
     {
         public void Save(string fileName, List<Shape> shapes)
@@ -42,7 +60,6 @@ namespace SETPaint
             //
             // Get each line and load each shape
             //
-            int i = 0;
             while ((line = reader.ReadLine()) != null)
             {
                 //
@@ -64,9 +81,6 @@ namespace SETPaint
             }
         }
 
-        public void Export(string fileName, List<Shape> shapes)
-        {
-            //put your image saving code here or delete this
-        }
+     
     }
 }

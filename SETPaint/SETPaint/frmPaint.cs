@@ -1,4 +1,18 @@
-﻿using System;
+﻿/* ================================================ *
+ *											 		*
+ * 		FILE 			: frmPaint.cs 				*
+ * 		PROJECT 		: WMP A3					*
+ * 		PROGRAMMER 		: Ben Lorantfy              *
+ * 		                  and Chaung Liu 		    *
+ * 		FIRST VERSION 	: 2014-10-07 				*
+ * 		DESCRIPTION		: A simple drawing program  *
+ * 		                  that allows you to draw   *
+ * 		                  lines, rectangles, and    *
+ * 		                  ellipses                  *
+ *													*
+ * ================================================ */
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,18 +22,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.IO;
 
 namespace SETPaint
 {
     public partial class frmPaint : Form
     {
-        int mouseX;
-        int mouseY;
-        string tool;
-        Draw draw;
-        FileIO fileIO;
-        bool undo;
-        bool checkPainting = false;
+        int mouseX;                     // Keeps track of the cursor's X position
+        int mouseY;                     // Keeps track of the cursor's Y position
+        string tool;                    // Keeps track of the current operation
+        Draw draw;                      // Encapsulates drawing methods
+        FileIO fileIO;                  // Encapsulates file io methods
+        bool undo;                      // Flag for if user undid something
+        bool checkPainting = false;     // Flag for if coordinates should show
+        bool savedAtleastOnce = false;  // Flag for if drawing is a new drawing
+        string fileName;                // Stores the file name for the drawing
+        string filePath;                // Stores the file path for the drawing
+
         public frmPaint()
         {           
             InitializeComponent();
@@ -29,28 +48,27 @@ namespace SETPaint
             mouseY = 0;
             tool = "none";
             undo = false;
+            fileName = "untitled.stp";
+            filePath = "untitled.stp";
         }
-        private void mousePosition_display()
-        {
-            if (checkPainting)
-            {
-                mousePosition.Text = "X: " + (this.PointToClient(Control.MousePosition).X - 24) + "    Y: " + (this.PointToClient(Control.MousePosition).Y - 24);
-            }
 
-            else
-            {
-                mousePosition.Text = "";
-            }
-        }
         private void pnlCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            mousePosition_display();
             mouseX = e.X;
             mouseY = e.Y;
 
             if (tool == "drawingLine" || tool == "drawingRectangle" || tool == "drawingEllipse")
             {
                 pnlCanvas.Invalidate();
+            }
+
+            if (checkPainting)
+            {
+                mousePosition.Text = "X: " + (mouseX - 24) + "    Y: " + (mouseY - 24);
+            }
+            else
+            {
+                mousePosition.Text = "";
             }
         }
 
@@ -272,113 +290,51 @@ namespace SETPaint
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            if (saveDialog.ShowDialog() == DialogResult.OK)
+            if (savedAtleastOnce)
             {
-                string fileName = saveDialog.FileName.ToString();
-                fileIO.Save(fileName, draw.Shapes());
+                fileIO.Save(filePath, draw.Shapes());
             }
-            
-        }
-
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //fileIO.Export("test", draw.Shapes()); //Delete this if its not implemented
-            Point screenLocation = PointToScreen(pnlCanvas.Location);
-            Bitmap bmp = new Bitmap(pnlCanvas.Width, pnlCanvas.Height);
-            Graphics g = Graphics.FromImage(bmp);
-            g.CopyFromScreen(new Point(screenLocation.X, screenLocation.Y), new Point(pnlCanvas.Location.X, pnlCanvas.Location.Y), new Size(pnlCanvas.Width, pnlCanvas.Height));
-
-            bool isSave = true;
-            SaveFileDialog sfdlg = new SaveFileDialog();
-            sfdlg.Title = "Save Image";
-            sfdlg.Filter = @"jpeg|*.jpg|bmp|*.bmp|gif|*.gif";
-            if (sfdlg.ShowDialog() == DialogResult.OK)
+            else
             {
-                string fileName = sfdlg.FileName.ToString();
-
-                if (fileName != "" && fileName != null)
-                {
-                    string fileExtName = fileName.Substring(fileName.LastIndexOf(".") + 1).ToString();
-                    System.Drawing.Imaging.ImageFormat imgformat = null;
-
-                    if (fileExtName != "")
-                    {
-                        switch (fileExtName)
-                        {
-                            case "jpg":
-                                imgformat = System.Drawing.Imaging.ImageFormat.Jpeg;
-                                break;
-                            case "bmp":
-                                imgformat = System.Drawing.Imaging.ImageFormat.Bmp;
-                                break;
-                            case "gif":
-                                imgformat = System.Drawing.Imaging.ImageFormat.Gif;
-                                break;
-                            default:
-                                MessageBox.Show("Only save as: jpg,bmp,gif");
-                                isSave = false;
-                                break;
-                        }
-
-                    }
-                    if (imgformat == null)
-                    {
-                        imgformat = System.Drawing.Imaging.ImageFormat.Jpeg;
-                    }
-
-                    if (isSave)
-                    {
-                        try
-                        {
-                            bmp.Save(fileName, imgformat);
-                            MessageBox.Show("Export Success!");
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Failed");
-                        }
-                    }
-                }
+                saveAsToolStripMenuItem_Click(sender, e);
             }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
+        {            
             OpenFileDialog openDialog = new OpenFileDialog();
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
-                string fileName = openDialog.FileName.ToString();
-               
-                fileIO.Open(fileName, draw.Shapes());
+                filePath = openDialog.FileName.ToString();
+                fileIO.Open(filePath, draw.Shapes());
                 tool = "none";
                 pnlCanvas.Invalidate();
-
-                this.Text = this.Text + " - " + openDialog.SafeFileName;
-                
-            }
-
-            else
-            {
-                this.Text = this.Text + " - " + "Untitled";
-            }
-
-            
+                fileName = Path.GetFileName(openDialog.FileName);
+                this.Text = "SETPaint - " + fileName;
+                savedAtleastOnce = true;
+            }       
         }
-
-
 
         private void aboutSETPaintToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("SET Paint" + "\n" + "Ben Lorantfy" + "\n" + "Chuang Liu" + "\n" + "Version 1.2" + "\n" + "Conestoga College");
+            frmAbout box = new frmAbout();
+            box.ShowDialog();
         }
 
-        
-
-
-        
-
-       
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.FileName = fileName;
+            saveDialog.Filter = @"SETPaint Project|*.stp";
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                filePath = saveDialog.FileName.ToString();
+                fileIO.Save(filePath, draw.Shapes());
+                fileName = Path.GetFileName(saveDialog.FileName);
+                this.Text = "SETPaint - " + fileName;
+                savedAtleastOnce = true;
+            }
+        }
+  
     }
 }
